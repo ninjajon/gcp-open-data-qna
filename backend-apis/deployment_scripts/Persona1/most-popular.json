@@ -1,0 +1,16 @@
+{
+  "name": "projects/rl-llm-dev/locations/global/collections/default_collection/engines/csm-full-media-most-popular",
+  "displayName": "csm-full-media-most-popular",
+  "dataStoreIds": [
+    "csm-full-recommendations_1700164671931"
+  ],
+  "solutionType": "SOLUTION_TYPE_RECOMMENDATION",
+  "commonConfig": {
+    "companyName": "Cymbal"
+  },
+
+  "mediaRecommendationEngineConfig": {
+    "type": "most-popular-items",
+    "optimizationObjective": "ctr"
+  }
+}

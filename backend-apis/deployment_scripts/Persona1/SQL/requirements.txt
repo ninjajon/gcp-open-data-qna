@@ -1,0 +1,2 @@
+cloud-sql-python-connector[pymysql]==1.4.2
+SQLALchemy==2.0.23

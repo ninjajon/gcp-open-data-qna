@@ -128,12 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Terraform
-*.tfvars
-*.tfvars.json
+.DS_Store
+credential.json
+**/.firebase
+**/.firebaserc
 
-.terraform.lock.hcl
-**/.terraform/*
-
-*.tfstate
-*.tfstate.backup
+token.json

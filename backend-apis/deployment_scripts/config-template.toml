@@ -1,0 +1,276 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[global]
+project_id = $$project_id$$
+location = $$location$$
+images_bucket_name = $$images_bucket_name$$
+project_number = $$project_number$$
+
+serving_config_id = "default_config"
+datastore_location = "global"
+
+[website_search]
+# Vertex AI Search Datastore ID
+datastore_id = $$website_datastore_id$$
+# Pubsub topic for website search
+website_topic_id = $$website_topic_id$$
+
+
+[salesforce]
+# Vertex AI Search for email support
+email_datastore_id = "$$email_datastore_id$$"
+secret_name = "$$secret_name$$"
+ws_secret_name = "$$ws_secret_name$$"
+user_id = "$$user_id$$"
+
+# Scope for the Workspace API - don't change
+email_scopes = [
+    'https://www.googleapis.com/auth/gmail.modify',
+    'https://www.googleapis.com/auth/documents',
+    'https://www.googleapis.com/auth/script.projects',
+]
+workspace_scopes = [
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/drive.resource',
+    'https://www.googleapis.com/auth/documents',
+]
+
+prompt_email_support = """<instructions>
+Extract questions or inquiries that are being asked in the conversation below. If you don't find any questions or inquiries, respond with an empty list.
+Don't include questions or inquiries about images or pictures.
+Provide the output in the JSON format below.
+</instructions>
+<conversation>
+{}
+</conversation>
+<JSONformat>
+{{
+    "questions": [
+        "Question or inquiry 1",
+        "Question or inquiry 2",
+        "Question or inquiry 3",
+        "Question or inquiry 4",
+    ]
+}}
+</JSONformat>
+<output>"""
+
+prompt_email_support_multimodal = """<instructions>
+Extract questions or inquiries that are being asked exclusively about images or pictures in the conversation below. 
+If you don't find any questions or inquiries about images or pictures, respond with an empty list.
+Provide the output in the JSON format below.
+</instructions>
+<conversation>
+{}
+</conversation>
+<JSONformat>
+{{
+    "questions": [
+        "Question or inquiry 1",
+        "Question or inquiry 2",
+        "Question or inquiry 3",
+        "Question or inquiry 4",
+    ]
+}}
+</JSONformat>
+<output>"""
+
+exception_email_response = """Dear customer {},
+Thank you for contacting the Cymbal support.
+An agent will analyze your request and get in touch soon to address your questions.
+Best regards,
+Cymbal support
+"""
+
+prompt_generate_reply = """The text below represents the description of two items. Provide a summary of both items in one sentence.
+Items:
+{references}
+output:"""
+
+prompt_talk_to_human = """<instructions>
+The text below is an email from a customer to a support center. Is the customer explicitly asking to talk to a human agent?
+Respond with True or False.
+</instructions>
+<conversation>
+{}
+</conversation>
+<output>
+"""
+
+apps_script_code = "function sendId() {\n  var id = DocumentApp.getActiveDocument().getId();\n  var data = {\n  'docs_id': id\n  }\n\n  var options = {\n    'method' : 'post',\n    'contentType': 'application/json',\n    // Convert the JavaScript object to a JSON string.\n    'payload' : JSON.stringify(data)\n  };\n  UrlFetchApp.fetch('https://csm-demo-42fk6qqj5a-uc.a.run.app/send-email-from-docs', options);\n}\n\nfunction onOpen() {\n  var ui = DocumentApp.getUi();\n  // Or DocumentApp or FormApp.\n  ui.createMenu('Send Email')\n      .addItem('Send email to Salesforce case', 'sendId')\n      .addToUi();\n}\n"
+
+# ID of the templates
+# Change this variables according to your Google Workspace settings
+drive_folder_id = "$$drive_folder_id$$"             # example: "1MYB0Ybyo9XZERgIcjsdfeqO0SKqhrkvqMx"
+docs_template_id = "$$docs_template_id$$"
+
+
+[recommendations]
+# Vertex AI Recommendations
+media_rec_datastore_id = $$media_rec_datastore_id$$
+media_rec_app_id.recommended-for-you = $$recommended-for-you$$
+media_rec_app_id.others-you-may-like = $$others-you-may-like$$
+media_rec_app_id.more-like-this = $$more-like-this$$
+media_rec_app_id.most-popular-items = $$most-popular-items$$
+# Pubsub topic for Recommendations
+recommendations_topic_id = $$recommendations_topic_id$$
+
+
+[multimodal]
+multimodal_model = "multimodalembedding"
+index_endpoint_id = $$index_endpoint_id$$
+deployed_index_id = $$deployed_index_id$$
+vector_api_endpoint = $$vector_api_endpoint$$
+prompt_with_query = """
+<Instructions>
+Answer the question below citing the index of the reference where you found the information.
+If you found the information in more than one reference, you can cite more than one index.
+</Instructions>
+<ConversationHistory>
+{history}
+</ConversationHistory>
+<Reference>
+{results}
+</Reference>
+<SampleOutputFormat>
+Some gaming chairs have 90° to 155° reclining positions and adjustable backrests to ensure comfort while gaming [1].
+Some also have Bluetooth speakers and a 2.4-inch height-adjustable backrest [3, 4].
+</SampleOutputFormat>
+<Question>
+{question}
+</Question>
+"""
+prompt_without_query = """
+<Instructions>
+Make a summary of the references below citing the index of the reference where you found the information.
+If you found the information in more than one reference, you can cite more than one index.
+</Instructions>
+<ConversationHistory>
+{history}
+</ConversationHistory>
+<Reference>
+{results}
+</Reference>
+<SampleOutputFormat>
+Some gaming chairs have 90° to 155° reclining positions and adjustable backrests to ensure comfort while gaming [1].
+Some also have Bluetooth speakers and a 2.4-inch height-adjustable backrest [3, 4].
+</SampleOutputFormat>
+"""
+
+[compare]
+prompt = """
+<Instructions>
+Make a HTML comparison table of the products below
+</Instructions>
+<Products>
+{results}
+</Reference>
+<SampleOutputFormat>
+<table>
+  <tr>
+    <th style="width:50%">Features</th>
+    <th>Basic</th>
+    <th>Pro</th>
+  </tr>
+  <tr>
+    <td>Sample text</td>
+    <td><i class="bi bi-remove"></i></td>
+    <td><i class="bi bi-check"></i></td>
+  </tr>
+  <tr>
+    <td>Sample text</td>
+    <td><i class="bi bi-check"></i></td>
+    <td><i class="bi bi-check"></i></td>
+  </tr>
+</table>
+</SampleOutputFormat>
+"""
+
+[summary]
+prompt = """
+Make a summary of the text below:
+
+{product}
+"""
+
+[content_creation]
+prompt_features = """<instructions>
+Extract features of the product description below. Provide the output in JSON format.
+</instructions>
+<productDescription>
+{}
+</productDescription>
+<jsonOutputFormat>
+{{
+    "product_features": [
+        "feature 1", "feature 2", "feature 3"
+    ]
+}}
+</jsonOutputFormat>
+<output>"""
+
+prompt_categories = """<instructions>
+Extract all the categories of the product description below. Provide the output in the JSON format below.
+</instructions>
+<productDescription>
+{}
+</productDescription>
+<jsonOutputFormat>
+{{
+    "product_categories": [
+        "category 1", "category 2", "category 3"
+    ]
+}}
+</jsonOutputFormat>
+<output>"""
+
+prompt_title_description = """<instructions>
+Using the information from the product description below, generate a creative title and a long description for a product. The output must be in the JSON format below.
+This title and description will be used in a product page.
+</instructions>
+<productDescription>
+Product categories:
+{}
+Additional context:
+{}
+</productDescription>
+<jsonOutputFormat>
+{{
+    "title": "Title for the product, including as many details as possible",
+    "description": "Long and verbose description of the product with all the details and more"
+}}
+</jsonOutputFormat>
+<output>"""
+
+prompt_price = """<instructions>
+I am a retailer and I am selling a {}. What price range would you suggest for this product?
+Respond using the JSON format below.
+</instructions>
+<jsonOutputFormat>
+{{
+    "min": "minimum price for the product",
+    "max": "maximum price for the product"
+}}
+</jsonOutputFormat>
+<output>
+"""
+
+[sql]
+db_user = $$db_user$$
+db_name = $$db_name$$
+project = $$project_id$$
+region = $$region$$
+instance_name = $$instance_name$$
