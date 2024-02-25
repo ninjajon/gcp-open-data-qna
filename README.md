@@ -7,11 +7,11 @@ This repository provides a deployment guide showcasing the application of Google
 ```
 .
 ├── frontend
-└── backend_apis
+└── backend-apis
 ```
 
 - [`/frontend`](/frontend): Source code for demo app.  
-- [`/backend_apis`](/backend_apis): Source code for backend APIs.
+- [`/backend-apis`](/backend-apis): Source code for backend APIs.
 
 
 ## Demonstrations
@@ -36,7 +36,9 @@ Persona 2 - Content Creator
 Persona 3 - Customer Experience Analyst
 ![Persona 3 Architecture](/frontend/src/assets/architectures/p3_uj_csm.svg)
 * **[User Experience analytics using Looker, Firebase Analytics, Firebase Realtime Analytics and Google Analytics](https://www.youtube.com/watch?v=rh5vCWLVdRA)**
-![Persona 3 Marketing Architecture](/frontend/src/assets/architectures/p1_uj_marketing.svg)
+
+Persona 3 - Marketing Integration
+![Persona 3 Marketing Architecture](/frontend/src/assets/architectures/p3_uj_marketing.svg)
 * **[Gen AI for Marketing](https://github.com/GoogleCloudPlatform/genai-for-marketing)**
 
 Persona 4 - Customer Service Agent
@@ -56,7 +58,7 @@ Persona 5 - Contact Center Analyst
 
 Persona 6 - Field Service Agent
 ![Persona 6 Architecture](/frontend/src/assets/architectures/p6_uj_1.svg)
-* **[Scheduling using Vertex AI Conversation](hhttps://www.youtube.com/watch?v=m10qRO1CAVE)**
+* **[Scheduling using Vertex AI Conversation](https://www.youtube.com/watch?v=m10qRO1CAVE)**
 * **[Insights from Reviews and Conversations using Vertex AI Search, Vertex AI LLM and Natural Language AI](https://www.youtube.com/watch?v=bu1e0ZIaohQ)**
 * **[Q&A using Vertex AI Search and Multimodal Q&A using Gemini](https://www.youtube.com/watch?v=jFBFknOrVac)**
 
@@ -165,7 +167,7 @@ For Persona 1 Search you can use the script provided to upload the products.
 python backend-apis/deployment-scripts/vertex_search_operations.py --project_id PROJECT --location us-central1
 ```
 
-This will create the `csm-search-engine` using the generated example dataset [search_products.jsonl](backend-apis/deployment-scripts/dataset/search_products.jsonl)
+This will create the `csm-search-engine` using the generated example dataset [search_products.jsonl](backend-apis/deployment_scripts/dataset/search_products.jsonl)
 
 ### Persona 1 Recommendations
 
@@ -179,7 +181,7 @@ python backend-apis/deployment-scripts/Persona1/media_event_generation.py
 
 This will generate a file named `full_media_events.jsonl`.
 
-Upload full_media_events.jsonl and [recommendations_products.jsonl](backend-apis/deployment-scripts/dataset/recommendation_products.jsonl) to Cloud Storage.
+Upload full_media_events.jsonl and [recommendations_products.jsonl](backend-apis/deployment_scripts/dataset/recommendation_products.jsonl) to Cloud Storage.
 
 [Create a recommendations app](https://cloud.google.com/generative-ai-app-builder/docs/create-app-data-store-media-recommendations) in Vertex AI Search and Conversations using the Console.
 Create 1 App for each model, but use the same datastore for all of them.
@@ -243,7 +245,7 @@ p5-reviews
 - gs://csm-solution-dataset/persona5/product_reviews.jsonl
 
 p5-conversations
-- backend-apis/deployment-scripts/dataset/full_conversations.jsonl
+- gs://csm-solution-dataset/persona5/full_conversations.jsonl
 
 ## Cloud SQL
 This demo uses Cloud SQL to store product information.
@@ -263,7 +265,7 @@ This demo uses Cloud SQL to store product information.
 ## Vertex AI Vector Search
 This demo uses Vertex AI Vector Search for similarity search
 
-Use the [example](backend-apis/vertex_vecotr_operations.py) to create 3 Vector Search Endpoints
+Use the [example](backend-apis/deployment_scripts/vertex_vector_operations.py) to create 3 Vector Search Endpoints
 
 p5-conversations-index - 19250 conversations
 - gs://csm-solution-dataset/persona5/conversations-embeddings/vertexai_conversations_embeddings.json
@@ -284,7 +286,7 @@ Pubsub is used to offload LLM Requests in the website.
 - website-search
 
 ## Update the backend configuration with information of your project
-Open the [configuration file](/backend_apis/app/config.toml) and include your informations.
+Open the [configuration file](/backend-apis/app/config.toml) and include your informations.
 
 ## Cloud Run Setup
 Cloud Run is used to serve the backend APIs.
